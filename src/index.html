@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>cs459 project</title>
-</head>
-<body>
-  <div>
-    <div id="info"></div>
-    <div id="chatWindow"></div>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>cs459 project</title>
+  </head>
+  <body>
     <div>
-      <input id="chatInput" type="text">
-      <button id="chatMessageSendBtn">전송</button>
+      <div id="info"></div>
+      <div id="chatWindow"></div>
+      <div>
+        <input id="chatInput" type="text">
+        <button id="chatMessageSendBtn">전송</button>
+        <button id="locationLoadBtn">친구 위치 요청</button>
+        <button id="midpointCalcBtn">중간지점 계산</button>
+      </div>
+      <div>
+        <center>
+          <div id="map" style="width:80%; height: 400px;"></div>
+        </center>
+      </div>
     </div>
-  </div>
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>
-</body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/index.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAK7Z78rIVcyLPyKnwTEn7jOYpcgVmoAzk&callback=initMap&region=kr"></script>
+  </body>
 </html>

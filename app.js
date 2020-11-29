@@ -44,6 +44,20 @@ io.sockets.on('connection', function(socket) {
 
     console.log('message sent: ' + data.name + ' / ' + data.message);
   });
+
+  socket.on('locationRequest', function() {
+    data = { name : socket.name };
+    io.sockets.emit('locationRequestResponse', data);
+
+    console.log('location request sent: ' + data.name);
+  });
+
+  socket.on('sendLocation', function(data) {
+    data.name = socket.name;
+    io.sockets.emit('sendLocationResponse', data);
+
+    console.log('location information sent: ' + data.name);
+  });
 });
 
 server.listen(3000, function() {
