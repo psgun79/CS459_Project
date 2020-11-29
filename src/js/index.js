@@ -6,6 +6,8 @@ let map, infoWindow;
 var socket = io();
 var myName;
 var myPosition;
+var isLogin = false;
+var kakaoLoginButton = document.getElementById('kakaoLoginBtn');
 var sendButton = document.getElementById('chatMessageSendBtn');
 var chatInput = document.getElementById('chatInput');
 var locationLoadButton = document.getElementById('locationLoadBtn');
@@ -51,6 +53,32 @@ function drawChatMessage(data) {
   
   return wrap;
 }
+
+kakaoLoginButton.addEventListener('click', function() {
+  Kakao.init('a79182cf34f944ca68c3976d8fd108c8');
+  Kakao.Auth.login({
+    success: (auth) => {
+      console.log('logged in');
+      isLogin = true;
+      Kakao.API.request({
+        url: '/v2/user/me',
+        success: function(response) { // properties에 '동의항목'에 있는 내용이 포함됨
+            console.log(response.properties);
+            console.log(response.properties.nickname);
+            console.log(response.properties.profile_image);
+            console.log(response.properties.thumbnail_image);
+        },
+        fail: function(error) {
+            console.log(error);
+        }
+      });
+    },
+    fail: (err) => {
+      console.error(err);
+    }
+  });
+  
+});
 
 sendButton.addEventListener('click', function() {
   var message = chatInput.value;
