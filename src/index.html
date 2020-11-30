@@ -12,20 +12,22 @@
       <div id="chatWindow"></div>
       <div>
         <input id="chatInput" type="text">
+        <button id="chatMessageSendBtn">메시지 전송</button>
         <button id="kakaoLoginBtn">카카오 로그인</button>
-        <button id="chatMessageSendBtn">전송</button>
-        <button id="locationLoadBtn">친구 위치 요청</button>
-        <button id="midpointCalcBtn">중간지점 계산</button>
+        <button id="kakaoFriendsBtn" disabled>카카오 친구 목록</button>
+        <button id="locationLoadBtn" disabled>친구 위치 요청</button>
+        <button id="midpointCalcBtn" disabled>중간지점 계산</button>
       </div>
       <div>
-        <center>
-          <div id="map" style="width:80%; height: 400px;"></div>
-        </center>
+          <div id="map" style="width:50%; height: 400px;"></div>
+          <div id="friends"></div>
       </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/index.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAK7Z78rIVcyLPyKnwTEn7jOYpcgVmoAzk&callback=initMap&region=kr"></script>
     <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script src="path/from/html/page/to/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
   </body>
 </html>

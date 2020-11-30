@@ -6,20 +6,26 @@ let map, infoWindow;
 var socket = io();
 var myName;
 var myPosition;
+var myProfile;
+var isConnected = false;
 var isLogin = false;
 var kakaoLoginButton = document.getElementById('kakaoLoginBtn');
+var kakaoFriendsbutton = document.getElementById('kakaoFriendsBtn');
 var sendButton = document.getElementById('chatMessageSendBtn');
 var chatInput = document.getElementById('chatInput');
 var locationLoadButton = document.getElementById('locationLoadBtn');
 var midpointCalcButton = document.getElementById('midpointCalcBtn');
 
-//////// INITIALIZATION + CHAT ////////
+//////// SOCKET INITIALIZATION + CHAT ////////
 
 socket.on('connect', function() {
-  var name = prompt('Username:','');
-  initMap();
-  socket.emit('newUserConnect', name);
-  myName = name;
+  if (!isConnected) {
+    var name = prompt('Username:','');
+    isConnected = true;
+    initMap();
+    socket.emit('newUserConnect', name);
+    myName = name;
+  }
 });
 
 var chatWindow = document.getElementById('chatWindow');
@@ -54,32 +60,6 @@ function drawChatMessage(data) {
   return wrap;
 }
 
-kakaoLoginButton.addEventListener('click', function() {
-  Kakao.init('a79182cf34f944ca68c3976d8fd108c8');
-  Kakao.Auth.login({
-    success: (auth) => {
-      console.log('logged in');
-      isLogin = true;
-      Kakao.API.request({
-        url: '/v2/user/me',
-        success: function(response) { // properties에 '동의항목'에 있는 내용이 포함됨
-            console.log(response.properties);
-            console.log(response.properties.nickname);
-            console.log(response.properties.profile_image);
-            console.log(response.properties.thumbnail_image);
-        },
-        fail: function(error) {
-            console.log(error);
-        }
-      });
-    },
-    fail: (err) => {
-      console.error(err);
-    }
-  });
-  
-});
-
 sendButton.addEventListener('click', function() {
   var message = chatInput.value;
   if(!message) return false;
@@ -87,6 +67,52 @@ sendButton.addEventListener('click', function() {
   socket.emit('sendMessage', {message});
 
   chatInput.value = '';
+});
+
+//////// KAKAO ////////
+
+if (isLogin) document.getElementById("kakaoLoginBtn").disabled = true;
+else document.getElementById("kakaoLoginBtn").disabled = false;
+
+kakaoLoginButton.addEventListener('click', function() {
+  Kakao.init('a79182cf34f944ca68c3976d8fd108c8');
+  Kakao.Auth.login({
+    scope: 'friends',
+    success: (auth) => {
+      console.log('logged in');
+      isLogin = true;
+      document.getElementById("kakaoLoginBtn").disabled = true;
+      document.getElementById("kakaoFriendsBtn").disabled = false;
+      Kakao.API.request({
+        url: '/v2/user/me',
+        success: function(response) { // properties에 '동의항목'에 있는 내용이 포함됨
+          myProfile = {
+            id: response.id,
+            nickname: response.properties.nickname,
+            profile_image: response.properties.profile_image
+          };
+        },
+        fail: function(error) {
+          console.log(error);
+        }
+      });
+    },
+    fail: (err) => {
+      console.error(err);
+    }
+  });
+});
+
+kakaoFriendsbutton.addEventListener('click', function() {
+  Kakao.API.request({
+    url: '/v1/api/talk/friends',
+    success: function(response) {
+      console.log(response);
+    },
+    fail: function(error) {
+      console.log(error);
+    }
+  });
 });
 
 //////// MAP DISPLAY ////////
@@ -123,6 +149,7 @@ function initMap() {
             label: "당신의 현재 위치"
           });
           myPosition = pos;
+          document.getElementById("locationLoadBtn").disabled = false;
         },
         () => {
           handleLocationError(true, infoWindow, map.getCenter());
@@ -166,6 +193,7 @@ socket.on('sendLocationResponse', function(data) {
       position: new google.maps.LatLng(36.37, 127.36),
       label: "친구의 현재 위치"
     });
+    document.getElementById("midpointCalcBtn").disabled = false;
   }
 });
 
