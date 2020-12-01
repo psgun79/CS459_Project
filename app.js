@@ -28,6 +28,14 @@ io.sockets.on('connection', function(socket) {
     console.log('connect: ' + name);
   });
 
+  socket.on('chatConnect', function(target) {
+    var message = target + '님과의 채팅이 연결되었습니다';
+    io.sockets.emit('updateMessage', {
+      name : 'SERVER',
+      message : message
+    })
+  });
+
   socket.on('disconnect', function() {
     var message = socket.name + ' disconnected';
     socket.broadcast.emit('updateMessage', { // 나를 제외한 다른 모든 소켓에 메시지 전송

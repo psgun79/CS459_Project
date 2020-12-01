@@ -9,12 +9,14 @@ var myPosition;
 var myProfile;
 var isConnected = false;
 var isLogin = false;
+var chatWindow = document.getElementById('chatWindow');
 var kakaoLoginButton = document.getElementById('kakaoLoginBtn');
 var kakaoFriendsbutton = document.getElementById('kakaoFriendsBtn');
 var sendButton = document.getElementById('chatMessageSendBtn');
 var chatInput = document.getElementById('chatInput');
 var locationLoadButton = document.getElementById('locationLoadBtn');
 var midpointCalcButton = document.getElementById('midpointCalcBtn');
+var addressBookWindow = document.getElementById('addressbook');
 
 //////// SOCKET INITIALIZATION + CHAT ////////
 
@@ -28,7 +30,6 @@ socket.on('connect', function() {
   }
 });
 
-var chatWindow = document.getElementById('chatWindow');
 socket.on('updateMessage', function(data) {
   if(data.name === 'SERVER') {
     var info = document.getElementById('info');
@@ -69,7 +70,7 @@ sendButton.addEventListener('click', function() {
   chatInput.value = '';
 });
 
-//////// KAKAO ////////
+//////// KAKAO + ADDRESS BOOK ////////
 
 if (isLogin) document.getElementById("kakaoLoginBtn").disabled = true;
 else document.getElementById("kakaoLoginBtn").disabled = false;
@@ -108,12 +109,42 @@ kakaoFriendsbutton.addEventListener('click', function() {
     url: '/v1/api/talk/friends',
     success: function(response) {
       console.log(response);
+      var friendEl = drawAddressBook(response);
+      addressBookWindow.appendChild(friendEl);
     },
     fail: function(error) {
       console.log(error);
     }
   });
 });
+
+function drawAddressBook(data) {
+  const friends = data.elements;
+  var wrap = document.createElement('p');
+  var img = document.createElement('img');
+  var name = document.createElement('span');
+  var button = document.createElement('button');
+  
+  name.innerText = friends[0].profile_nickname;
+  img.src = friends[0].profile_thumbnail_image;
+  button.innerText = "1:1 대화";
+  button.onclick = () => {
+    socket.emit('chatConnect', name.innerText);
+  }
+  
+  name.classList.add('output__user__name');
+  img.classList.add('output__user__image');
+  button.classList.add('output__user_button');
+  
+  wrap.classList.add('output__user');
+  wrap.dataset.id = socket.id;
+  
+  wrap.appendChild(img);
+  wrap.appendChild(name);
+  wrap.appendChild(button);
+  
+  return wrap;
+}
 
 //////// MAP DISPLAY ////////
 
