@@ -17,6 +17,7 @@ var chatInput = document.getElementById('chatInput');
 var locationLoadButton = document.getElementById('locationLoadBtn');
 var midpointCalcButton = document.getElementById('midpointCalcBtn');
 var addressBookWindow = document.getElementById('addressbook');
+var appointmentButton = document.getElementById('appointmentBtn');
 
 //////// SOCKET INITIALIZATION + CHAT ////////
 
@@ -255,3 +256,65 @@ function calcRoute() {
 midpointCalcButton.addEventListener('click', function() {
   calcRoute();
 });
+
+
+
+////////// Google Calendar API //////////
+
+const { google } = require('googleapis')
+
+const { OAuth2 } = google.auth
+
+const oAuth2Client = new OAuth2('95982012649-cspq20jvq5ur59gmnj2uekgvhjlic3u7.apps.googleusercontent.com', 'Ieecb1R0H0c0Z_WqRHGTYg2A')
+
+oAuth2Client.setCredentials({ refresh_token: '1//04GpYZO9RWCWKCgYIARAAGAQSNwF-L9IrV1tHgNxtWmutp9-XKg8OY2oT-K3GMfgQlDO_1p-9Ic65VfiPuIrVaT1SpG-IatF46rg',})
+
+const calendar = google.calendar({ version: 'v3', auth: oAuth2Client })
+
+const eventStartTime = new Date()
+
+eventStartTime.setDate(eventStartTime.getDay() + 2)
+
+const eventEndTime = new Date()
+eventEndTime.setDate(eventEndTime.getDay() + 2)
+eventEndTime.setMinutes(eventEndTime.getMinutes() + 45))
+
+const event = {
+    summary: 'Meeting Appointment',
+    location: 'Location testing text',
+    description: 'Testing description number 1',
+    start: {
+        dateTime: eventStartTime,
+        timeZone: 'Asia/Seoul',
+    },
+    end{
+        dataTime: eventEndTime,
+        timeZone: 'Asia/Seoul',
+    },
+    colorId: 1, 
+}
+
+calendar.freebusy.query(
+    {
+        resource: {
+            timeMin: eventStartTime,
+            timeMax: eventEndTime,
+            timeZone: 'Asia/Seoul'
+            items: [{id: 'primary'}],
+        },
+    },
+    (err, res) => {
+        if (err) return console.error('Busy Query Error: ', err)
+
+        const eventsArr = res.data.calendars.primary.busy
+
+        if (eventsArr.length === 0) return calendar.events.insert(
+        { calendarId: 'primary', resource: event },
+            err => {
+                if (err) return console.error('Calendar Event Creation Error: ', err)
+
+                return console.log('Calendar Event Created.')
+            })
+        return console.log(`Sorry, I'm Busy`)
+    }
+)
