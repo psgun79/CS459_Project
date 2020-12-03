@@ -261,6 +261,7 @@ midpointCalcButton.addEventListener('click', function() {
 
 ////////// Google Calendar API //////////
 
+/*
 const { google } = require('googleapis')
 
 const { OAuth2 } = google.auth
@@ -318,3 +319,4 @@ calendar.freebusy.query(
         return console.log(`Sorry, I'm Busy`)
     }
 )
+*/
