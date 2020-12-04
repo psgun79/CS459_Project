@@ -262,6 +262,10 @@ midpointCalcButton.addEventListener('click', function() {
 ////////// Google Calendar API //////////
 
 /*
+
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
 const { google } = require('googleapis')
 
 const { OAuth2 } = google.auth
@@ -278,7 +282,7 @@ eventStartTime.setDate(eventStartTime.getDay() + 2)
 
 const eventEndTime = new Date()
 eventEndTime.setDate(eventEndTime.getDay() + 2)
-eventEndTime.setMinutes(eventEndTime.getMinutes() + 45))
+eventEndTime.setMinutes(eventEndTime.getMinutes() + 45)
 
 const event = {
     summary: 'Meeting Appointment',
@@ -288,7 +292,7 @@ const event = {
         dateTime: eventStartTime,
         timeZone: 'Asia/Seoul',
     },
-    end{
+    end: {
         dataTime: eventEndTime,
         timeZone: 'Asia/Seoul',
     },
@@ -300,7 +304,7 @@ calendar.freebusy.query(
         resource: {
             timeMin: eventStartTime,
             timeMax: eventEndTime,
-            timeZone: 'Asia/Seoul'
+            timeZone: 'Asia/Seoul',
             items: [{id: 'primary'}],
         },
     },
